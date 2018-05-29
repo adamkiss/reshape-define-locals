@@ -1,5 +1,7 @@
 Reshape Define Locals
 
+[![Build Status](https://semaphoreci.com/api/v1/adamkiss/reshape-define-locals/branches/master/badge.svg)](https://semaphoreci.com/adamkiss/reshape-define-locals)
+
 ---
 
 Define and append locals inside your reshape/sugarml files. Supports YAML and JavaScript functions.
