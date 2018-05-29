@@ -14,3 +14,6 @@ indent_style = space
 
 [*.{jade,pug,sgr,md,yaml,yml}]
 trim_trailing_whitespace = false
+
+[test/**.{html,sgr}]
+insert_final_newline = false
