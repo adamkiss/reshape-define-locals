@@ -1,8 +1,4 @@
-# Reshape Define Locals
-
-[![Build Status](https://semaphoreci.com/api/v1/adamkiss/reshape-define-locals/branches/master/badge.svg)](https://semaphoreci.com/adamkiss/reshape-define-locals)
-
----
+# Reshape Define Locals [![Build Status][build_badge]][build_link]
 
 Define and append locals inside your reshape/sugarml files. Supports YAML and JavaScript functions.
 
@@ -64,3 +60,6 @@ When you just need some data inside your current file.
   <p>{{ locals['my-options'].join(' ') }}</p>
 </div>
 ```
+
+[build_badge]: https://semaphoreci.com/api/v1/adamkiss/reshape-define-locals/branches/master/badge.svg
+[build_link]: https://semaphoreci.com/adamkiss/reshape-define-locals
