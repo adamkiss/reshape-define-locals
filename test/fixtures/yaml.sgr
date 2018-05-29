@@ -1,0 +1,16 @@
+define-locals(type='yaml').
+	key: simple value
+	array:
+		- item 1
+		- item 2
+		- item 3
+	object:
+		sub: value
+		deep:
+			property: value
+	dash-key: yolo
+html
+	body
+		#expressions
+			ul: each(loop='item in array'): li {{ item }}
+		div(attr='{{ key }}') {{ object.deep.property }}

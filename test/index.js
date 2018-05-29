@@ -4,6 +4,7 @@ const {readFile} = require('fs')
 
 const test = require('ava')
 const reshape = require('reshape')
+const sugar = require('sugarml')
 const expressions = require('reshape-expressions')
 const layouts = require('reshape-layouts')
 const include = require('reshape-include')
@@ -48,7 +49,32 @@ test('Layouts and partials', async t => {
 
 	logActual(actual, config)
 
-	console.log(actual.output(config.locals))
+	return t.true(actual.output(config.locals).trim() === expect.trim())
+})
+
+test('Yaml and SugarML', async t => {
+	const source = await readFileAsync(path.join(fixtures, `yaml.sgr`), 'utf8')
+	const expect = await readFileAsync(path.join(fixtures, `yaml.expected.html`), 'utf8')
+
+	const config = {
+		locals: {
+			page: {title: 'This will be overwritten'},
+			list: ['original 1', 'original 2'],
+			deep: {merge: {object: {key: 'not value'}}}
+		}
+	}
+
+	const actual = await reshape({
+		parser: sugar,
+		plugins: [
+			defineLocals(config),
+			layouts({encoding: 'utf8', root: fixtures}),
+			include({root: fixtures}),
+			expressions(config)
+		]
+	}).process(source)
+
+	logActual(actual, config)
 
 	return t.true(actual.output(config.locals).trim() === expect.trim())
 })
