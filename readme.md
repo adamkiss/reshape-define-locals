@@ -14,6 +14,38 @@ $ npm i -S reshape-define-locals
 
 ## Usage
 
+### Javascript - Object (default)
+
+Default mode is javascript, written as it would be written inside curly brackets:
+
+``` html
+<div class='some-other-div'>
+  <define-locals>
+    key: 'string',
+    arr: ['one', 'two', 'three'],
+    'with-dash': 'another-string'
+  </script>
+
+  <p>{{ locals.arr.join(' ') }}</p>
+</div>
+```
+
+### Javascript - Function
+
+When you need *some* logic, you can use `type='function'`, which is evaluated as a function and given one parameter: existing `locals`.
+
+``` html
+<div class='some-other-div'>
+  <define-locals type='function'>
+    return {
+      arr: ['one', 'two', 'three', locals.foo]
+    }
+  </script>
+
+  <p>{{ locals.arr.join(' ') }}</p>
+</div>
+```
+
 ### Using YAML
 
 When you just need some data inside your current file.
@@ -21,27 +53,12 @@ When you just need some data inside your current file.
 ``` html
 <div class='just-some-div'>
   <define-locals type='yaml'>
-my-options:
-- one
-- two
-- three
+    my-options:
+    - one
+    - two
+    - three
   </define-locals>
 
   <p>{{ locals['my-options'].join(' ') }}</p>
 </div>
 ```
-
-### Using Javascript
-
-When you need *some* logic, you can use JavaScript code, which is evaluated as a function and given one parameter: existing `locals`.
-
-``` html
-<div class='some-other-div'>
-  <script type='text/javascript' define-locals>
-    return {
-      arr: ['one', 'two', 'three']
-    }
-  </script>
-
-  <p>{{ locals.arr.join(' ') }}</p>
-</div>
