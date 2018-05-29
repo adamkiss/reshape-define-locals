@@ -2,11 +2,12 @@
   "name": "reshape-define-locals",
   "version": "0.0.1",
   "description": "Define locals for your reshape files inline",
+  "repository": "https://github.com/adamkiss/reshape-define-locals",
   "main": "index.js",
   "files": "index.js",
   "scripts": {
     "test": "ava",
-    "pre-commit": "xo && nyc ava"
+    "precommit": "xo && nyc ava"
   },
   "keywords": [
     "locals",
