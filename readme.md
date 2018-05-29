@@ -61,5 +61,8 @@ When you just need some data inside your current file.
 </div>
 ```
 
+## License
+MIT, &copy; 2018 Adam Kiss
+
 [build_badge]: https://semaphoreci.com/api/v1/adamkiss/reshape-define-locals/branches/master/badge.svg
 [build_link]: https://semaphoreci.com/adamkiss/reshape-define-locals
