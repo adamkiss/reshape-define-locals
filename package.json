@@ -1,6 +1,6 @@
 {
   "name": "reshape-define-locals",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Define locals for your reshape files inline",
   "repository": "https://github.com/adamkiss/reshape-define-locals",
   "main": "index.js",
