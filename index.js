@@ -18,11 +18,6 @@ module.exports = function reshapeDefineLocals(options) {
 		return modifyNodes(tree, node => isDefinition(node), node => {
 			let mode = 'object'
 
-
-
-
-
-
 			// normalize content and convert to spaces (for yaml)
 			const content = convertToSpaces(stripIndent(node.location.innerHTML), 2)
 
