@@ -67,4 +67,4 @@ MIT, &copy; 2018 Adam Kiss
 
 [build_badge]: https://semaphoreci.com/api/v1/adamkiss/reshape-define-locals/branches/master/badge.svg
 [build_link]: https://semaphoreci.com/adamkiss/reshape-define-locals
-[version_badge]: https://img.shields.io/npm/v/reshape-define-locals-blue.svg?label=NPM&style=flat-square&colorB=b54c81
+[version_badge]: https://img.shields.io/npm/v/reshape-define-locals.svg?label=NPM&style=flat-square&colorB=b54c81
