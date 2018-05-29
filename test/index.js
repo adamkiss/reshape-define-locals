@@ -5,25 +5,55 @@ const {readFile} = require('fs')
 const test = require('ava')
 const reshape = require('reshape')
 const expressions = require('reshape-expressions')
+const layouts = require('reshape-layouts')
+const include = require('reshape-include')
 const defineLocals = require('..')
 
 const readFileAsync = promisify(readFile)
 const fixtures = path.join(__dirname, 'fixtures')
 
-test('basic', t => {
-	return matchExpected(t, 'basic', {locals: {foo: 'bar'}}, false)
-})
+test('Basic', async t => {
+	const source = await readFileAsync(path.join(fixtures, `basic.html`), 'utf8')
+	const expect = await readFileAsync(path.join(fixtures, `basic.expected.html`), 'utf8')
 
-/* Matchers stolen from reshape/expressions */
-async function matchExpected(t, name, config = {}, log = false) {
-	const source = await readFileAsync(path.join(fixtures, `${name}.html`), 'utf8')
-	const expect = await readFileAsync(path.join(fixtures, `${name}.expected.html`), 'utf8')
+	const config = {locals: {foo: 'bar'}}
 
 	const actual = await reshape({
 		plugins: [defineLocals(config), expressions(config)]
 	}).process(source)
 
-	if (log) console.log(actual.output.toString(), '\n--------\n', actual.output(config.locals))
+	logActual(actual, config)
 
-	return t.truthy(actual.output(config.locals).trim() === expect.trim())
+	return t.true(actual.output(config.locals).trim() === expect.trim())
+})
+
+test('Layouts and partials', async t => {
+	const source = await readFileAsync(path.join(fixtures, `layouts.html`), 'utf8')
+	const expect = await readFileAsync(path.join(fixtures, `layouts.expected.html`), 'utf8')
+
+	const config = {
+		locals: {
+			page: {title: 'This will be overwritten'},
+			list: ['original 1', 'original 2'],
+			deep: {merge: {object: {key: 'not value'}}}
+		}
+	}
+
+	const actual = await reshape({plugins: [
+		defineLocals(config),
+		layouts({encoding: 'utf8', root: fixtures}),
+		include({root: fixtures}),
+		expressions(config)
+	]}).process(source)
+
+	logActual(actual, config)
+
+	console.log(actual.output(config.locals))
+
+	return t.true(actual.output(config.locals).trim() === expect.trim())
+})
+
+function logActual(actual, config) {
+	if (process.env.LOG)
+		console.log(actual.output.toString(), '\n--------\n', actual.output(config.locals))
 }

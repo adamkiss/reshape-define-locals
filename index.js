@@ -1,6 +1,7 @@
 const {modifyNodes} = require('reshape-plugin-util')
 const stripIndent = require('strip-indent')
 const convertToSpaces = require('convert-to-spaces')
+const mergeWith = require('lodash.mergewith')
 
 function isDefinition(node) {
 	return node.type === 'tag' && node.name === 'define-locals'
@@ -12,6 +13,11 @@ function scopeEval(fnString, locals = null) {
 }
 
 const emptyNode = {type: 'text', content: ''}
+
+const mergeWithCustomizer = (objVal, srcVal) => {
+	if (Array.isArray(srcVal))
+		return objVal.concat(srcVal)
+}
 
 module.exports = function reshapeDefineLocals(options) {
 	return function defineLocalsPlugin(tree, ctx) {
@@ -43,7 +49,8 @@ module.exports = function reshapeDefineLocals(options) {
 					})
 			}
 
-			options.locals = Object.assign(options.locals, definedLocals)
+			// deep merge with array concat customization
+			mergeWith(options.locals, definedLocals, mergeWithCustomizer)
 
 			return emptyNode
 		})
