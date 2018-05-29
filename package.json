@@ -1,0 +1,46 @@
+{
+  "name": "reshape-define-locals",
+  "version": "0.0.1",
+  "description": "Define locals for your reshape files inline",
+  "main": "index.js",
+  "files": "index.js",
+  "scripts": {
+    "test": "ava",
+    "pre-commit": "xo && nyc ava"
+  },
+  "keywords": [
+    "locals",
+    "reshape-plugin"
+  ],
+  "author": "Adam Kiss <i.am.adam.kiss+npm@gmail.com>",
+  "license": "MIT",
+  "xo": {
+    "semicolon": false,
+    "rules": {
+      "generator-star-spacing": 0,
+      "capitalized-comments": 0,
+      "require-yield": 0,
+      "func-names": 0,
+      "curly": [
+        "error",
+        "multi",
+        "consistent"
+      ]
+    }
+  },
+  "devDependencies": {
+    "ava": "~0.25.0",
+    "coveralls": "~3.0.1",
+    "nyc": "~11.8.0",
+    "reshape": "~0.5.0",
+    "reshape-expressions": "~0.1.5",
+    "sugarml": "~0.6.0",
+    "xo": "~0.21.1"
+  },
+  "dependencies": {
+    "convert-to-spaces": "~1.0.2",
+    "lodash.mergewith": "~4.6.1",
+    "reshape-plugin-util": "~0.2.1",
+    "strip-indent": "~2.0.0"
+  }
+}
