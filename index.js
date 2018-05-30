@@ -8,9 +8,23 @@ function isDefinition(node) {
 	return node.type === 'tag' && node.name === 'define-locals'
 }
 
-function scopeEval(fnString, locals = null) {
-	// eslint-disable-next-line no-eval
-	return eval(fnString)(locals)
+function scopeEval(node, PluginError, fnString, locals = null) {
+	try {
+		// eslint-disable-next-line no-eval
+		return eval(fnString)(locals)
+	} catch (err) {
+		const location = ('location' in node) ? node.location : node.content[0].location
+
+		if (err.name === 'SyntaxError')
+			throw new PluginError({
+				message: `There was a SyntaxError in your Define Locals block of type='${locals ? 'function' : 'object'}'. Did you mean to use YAML type?`,
+				plugin: 'reshape-define-locals', location
+			})
+		else
+			throw new PluginError({
+				message: err.toString(), plugin: 'reshape-define-locals', location
+			})
+	}
 }
 
 const emptyNode = {type: 'text', content: ''}
@@ -43,11 +57,17 @@ module.exports = function reshapeDefineLocals(options) {
 					definedLocals = yaml.safeLoad(content, 'utf8')
 					break
 				case 'function':
-					definedLocals = scopeEval(`locals => {${content}}`, options.locals)
+					definedLocals = scopeEval(
+						node, ctx.PluginError,
+						`locals => {${content}}`, options.locals
+					)
 					break
 				case 'object':
 					// eslint-disable-next-line no-eval
-					definedLocals = scopeEval(`_ => { return {${content}}}`)
+					definedLocals = scopeEval(
+						node, ctx.PluginError,
+						`_ => { return {${content}}}`
+					)
 					break
 				default:
 					throw new ctx.PluginError({
