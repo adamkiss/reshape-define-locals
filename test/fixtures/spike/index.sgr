@@ -1,0 +1,15 @@
+define-locals(type='yaml').
+	overwritten: Defined in 'index.sgr', before extends
+
+extends(src='layout.sgr')
+	define-locals(type='yaml').
+		overwritten: Defined in 'index.sgr', inside extends.
+
+	block(name='title')
+		define-locals(type='yaml').
+			overwritten: Defined in 'index.sgr', inside title block.
+		title {{ overwritten }}
+
+
+	block(name='content')
+		p {{ overwritten }}

@@ -1,0 +1,6 @@
+define-locals(type='yaml').
+	overwritten: Defined in 'third.sgr', outside extends.
+
+extends(src='layout.sgr')
+	block(name='content')
+		p {{ overwritten }}
