@@ -95,7 +95,7 @@ test.only('Usage with Spike', async t => {
 	}
 	const {publicPath} = await compileProject('spike', {
 		matchers: {html: '*(**/)*.sgr'},
-		ignore: ['layout.sgr'],
+		ignore: ['layout.sgr', '.gitignore', 'expected'],
 		entry: {index: ['./index.js']},
 		reshape: {
 			parser: sugar,
