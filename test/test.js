@@ -85,15 +85,17 @@ test('Yaml and SugarML', async t => {
 	return t.true(actual.output(config.locals).trim() === expect.trim())
 })
 
-test.only('Usage with Spike', async t => {
+test('Usage with Spike', async t => {
 	const spikeRoot = path.join(fixtures, 'spike')
+	const spikePublic = path.join(spikeRoot, 'public')
+	const spikeExpect = path.join(fixtures, 'spike-expected')
 
-	await del([path.join(spikeRoot, 'public')])
+	await del([spikePublic])
 
 	const locals = {
 		overwritten: 'This is defined in app.js'
 	}
-	const {publicPath} = await compileProject('spike', {
+	await compileProject('spike', {
 		matchers: {html: '*(**/)*.sgr'},
 		ignore: ['layout.sgr', '.gitignore', 'expected'],
 		entry: {index: ['./index.js']},
@@ -109,7 +111,15 @@ test.only('Usage with Spike', async t => {
 		}
 	})
 
-	return t.pass()
+	const compareList = ['index.html', 'second.html', 'third.html']
+	const actualFiles = await Promise.all(compareList.map(
+		f => readFileAsync(path.join(spikePublic, f), 'utf8')
+	))
+	const expectedFiles = await Promise.all(compareList.map(
+		f => readFileAsync(path.join(spikeExpect, f), 'utf8')
+	))
+
+	return t.deepEqual(actualFiles, expectedFiles)
 })
 
 function logActual(actual, config) {
