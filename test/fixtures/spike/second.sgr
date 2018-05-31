@@ -1,15 +1,17 @@
-define-locals(type='yaml').
-	overwritten: Defined in 'second.sgr', before extends
+locals.
+	overwritten: (second) Before 'extends'
+	page:
+		title: A second page
+		description: Second page has some more information
 
 extends(src='layout.sgr')
-	define-locals(type='yaml').
-		overwritten: Defined in 'second.sgr', inside extends.
+	locals.
+		overwritten: (second) Inside 'extends'
 
 	block(name='title')
-		define-locals(type='yaml').
-			overwritten: Defined in 'second.sgr', inside title block.
-		title {{ overwritten }}
-
+		locals.
+			overwritten: (second) Inside 'title' block
+		title {{ page.title }}
 
 	block(name='content')
 		p {{ overwritten }}

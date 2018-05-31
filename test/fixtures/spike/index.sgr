@@ -1,15 +1,17 @@
-define-locals(type='yaml').
-	overwritten: Defined in 'index.sgr', before extends
+locals.
+	overwritten: (index) Before 'extends'
+	page:
+		title: This is index
+		description: A beautiful index page
 
 extends(src='layout.sgr')
-	define-locals(type='yaml').
-		overwritten: Defined in 'index.sgr', inside extends.
+	locals.
+		overwritten: (index) Inside 'extends'
 
 	block(name='title')
-		define-locals(type='yaml').
-			overwritten: Defined in 'index.sgr', inside title block.
-		title {{ overwritten }}
-
+		locals.
+			overwritten: (index) Inside 'title' block
+		title {{ page.title }}
 
 	block(name='content')
 		p {{ overwritten }}
