@@ -4,8 +4,8 @@ const convertToSpaces = require('convert-to-spaces')
 const mergeWith = require('lodash.mergewith')
 const yaml = require('js-yaml')
 
-function isDefinition(node) {
-	return node.type === 'tag' && node.name === 'define-locals'
+function isDefinition(node, tag) {
+	return node.type === 'tag' && node.name === tag
 }
 
 function scopeEval(node, PluginError, fnString, locals = null) {
@@ -34,10 +34,15 @@ const mergeWithCustomizer = (objVal, srcVal) => {
 		return objVal.concat(srcVal)
 }
 
-module.exports = function reshapeDefineLocals(options) {
+module.exports = function reshapeDefineLocals(opts) {
+	const options = Object.assign({
+		mode: 'yaml',
+		tag: 'define-locals'
+	}, opts)
+
 	return function defineLocalsPlugin(tree, ctx) {
-		return modifyNodes(tree, node => isDefinition(node), node => {
-			let mode = 'object'
+		return modifyNodes(tree, node => isDefinition(node, options.tag), node => {
+			let {mode} = options
 
 			// if node.location is defined, we will prefer innerHTML (= probably HTML)
 			// Otherwise content will be sufficient (probably it's SugarML)

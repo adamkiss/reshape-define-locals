@@ -104,7 +104,11 @@ test('Usage with Spike', async t => {
 			plugins: [
 				layouts({encoding: 'utf8', root: spikeRoot}),
 				include({root: spikeRoot}),
-				defineLocals({locals}),
+				defineLocals({
+					mode: 'yaml',
+					tag: 'locals',
+					locals
+				}),
 				expressions()
 			],
 			locals: _ => locals
