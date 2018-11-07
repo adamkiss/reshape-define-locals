@@ -1,0 +1,30 @@
+version: v1.0
+name: Testing pipeline
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: "Install dependencies"
+    task:
+      prologue:
+        commands:
+          - sem-version node 8.12.0
+      jobs:
+        - name: NPM Install and Cache
+          commands:
+            - checkout
+            - cache restore node-modules-$(checksum package-lock.json)
+            - npm ci
+            - cache store node-modules-$(checksum package-lock.json) node_modules
+  - name: "Tests"
+    task:
+      prologue:
+        commands:
+          - sem-version node 8.12.0
+          - checkout
+          - cache restore node-modules-$(checksum package-lock.json)
+      jobs:
+      - name: Everything
+        commands:
+          - npm test-verbose
