@@ -27,4 +27,4 @@ blocks:
       jobs:
       - name: Everything
         commands:
-          - npm test-verbose
+          - npm test
