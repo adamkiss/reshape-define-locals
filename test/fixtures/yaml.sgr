@@ -8,9 +8,11 @@ define-locals(type='yaml').
 		sub: value
 		deep:
 			property: value
-	dash-key: yolo
+	notroot:
+		dash-key: yolo
 html
 	body
 		#expressions
 			ul: each(loop='item in array'): li {{ item }}
 		div(attr='{{ key }}') {{ object.deep.property }}
+		div(attr='{{ key }}') {{ notroot['dash-key'] }}

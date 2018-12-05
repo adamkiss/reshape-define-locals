@@ -13,6 +13,7 @@ const include = require('reshape-include')
 
 const Spike = require('spike-core')
 const reshapeStandard = require('reshape-standard')
+const pageId = require('spike-page-id')
 
 const defineLocals = require('..')
 
@@ -85,7 +86,9 @@ test('Yaml and SugarML', async t => {
 	return t.true(actual.output(config.locals).trim() === expect.trim())
 })
 
-test('Usage with Spike', async t => {
+test.only('Usage with Spike', async t => {
+	t.plan(3)
+
 	const spikeRoot = path.join(fixtures, 'spike')
 	const spikePublic = path.join(spikeRoot, 'public')
 	const spikeExpect = path.join(fixtures, 'spike-expected')
@@ -109,21 +112,35 @@ test('Usage with Spike', async t => {
 					tag: 'locals',
 					locals
 				}),
-				expressions()
+				expressions(),
+				defineLocals.reset(locals)
 			],
-			locals: _ => locals
+			locals: ctx => {
+				console.log('locals(): ', JSON.stringify(locals))
+				return Object.assign(locals, {
+					pageId: pageId(ctx)
+				})
+			}
 		}
 	})
 
-	const compareList = ['index.html', 'second.html', 'third.html']
-	const actualFiles = await Promise.all(compareList.map(
-		f => readFileAsync(path.join(spikePublic, f), 'utf8')
-	))
-	const expectedFiles = await Promise.all(compareList.map(
-		f => readFileAsync(path.join(spikeExpect, f), 'utf8')
-	))
+	// const compareListFiles = ['index.html', 'second.html', 'third.html', 'fourth.html']
+	// const actualFiles = await Promise.all(compareListFiles.map(
+	// 	f => readFileAsync(path.join(spikePublic, f), 'utf8')
+	// ))
+	// const expectedFiles = await Promise.all(compareListFiles.map(
+	// 	f => readFileAsync(path.join(spikeExpect, f), 'utf8')
+	// ))
+	// t.deepEqual(actualFiles, expectedFiles)
 
-	return t.deepEqual(actualFiles, expectedFiles)
+	// const compareListFails = ['fail-index.html', 'fail-second.html']
+	// await Promise.all(compareListFails.map(
+	// 	f => {
+	// 		const expected = readFileAsync(path.join(spikePublic, f), 'utf8')
+	// 		const actual = readFileAsync(path.join(spikeExpect, f), 'utf8')
+	// 		return t.not(expected, actual)
+	// 	}
+	// ))
 })
 
 function logActual(actual, config) {

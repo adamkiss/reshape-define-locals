@@ -1,0 +1,11 @@
+locals.
+	page:
+		title: A fourth page
+		description: The fourth page has no overwritten information
+
+extends(src='layout.sgr')
+	block(name='title')
+		title {{ (item || page).title }}
+
+	block(name='content')
+		p {{ overwritten }}

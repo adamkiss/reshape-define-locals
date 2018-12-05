@@ -1,16 +1,14 @@
 locals.
-	overwritten: (second) Before 'extends'
 	page:
 		title: A second page
 		description: Second page has some more information
 
 extends(src='layout.sgr')
-	locals.
-		overwritten: (second) Inside 'extends'
+	block(name='locals')
+		locals.
+			overwritten: (second) Inside 'extends'
 
 	block(name='title')
-		locals.
-			overwritten: (second) Inside 'title' block
 		title {{ page.title }}
 
 	block(name='content')

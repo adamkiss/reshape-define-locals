@@ -1,0 +1,14 @@
+extends(src='layout.sgr')
+	block(name='title')
+		locals.
+			overwritten: (index-fail) Inside 'title' block
+		title {{ page.title }}
+
+	block(name='content')
+		p {{ overwritten }}
+
+locals.
+	overwritten: (index-fail) After 'extends'
+	page:
+		title: This is a fail index
+		description: A beautifail index page

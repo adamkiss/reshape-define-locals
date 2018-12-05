@@ -17,7 +17,7 @@ function scopeEval(node, PluginError, fnString, locals = null) {
 
 		if (err.name === 'SyntaxError')
 			throw new PluginError({
-				message: `There was a SyntaxError in your Define Locals block of type='${locals ? 'function' : 'object'}'. Did you mean to use YAML type?`,
+				message: `There was a SyntaxError in your Define Locals block of type='${locals ? 'function' : 'object'}'. Did you mean to use YAML type (default)?`,
 				plugin: 'reshape-define-locals', location
 			})
 		else
@@ -34,14 +34,18 @@ const mergeWithCustomizer = (objVal, srcVal) => {
 		return objVal.concat(srcVal)
 }
 
+let localsBackup = {}
+
 module.exports = function reshapeDefineLocals(opts) {
 	const options = Object.assign({
 		mode: 'yaml',
 		tag: 'define-locals'
 	}, opts)
+	localsBackup = Object.assign({}, options.locals)
 
 	return function defineLocalsPlugin(tree, ctx) {
 		return modifyNodes(tree, node => isDefinition(node, options.tag), node => {
+			console.log('beforerun: ', JSON.stringify(opts.locals))
 			let {mode} = options
 
 			// if node.location is defined, we will prefer innerHTML (= probably HTML)
@@ -56,7 +60,7 @@ module.exports = function reshapeDefineLocals(opts) {
 			if ('attrs' in node && 'type' in node.attrs)
 				mode = node.attrs.type[0].content
 
-			let definedLocals
+			let definedLocals = {}
 			switch (mode) {
 				case 'yaml':
 					definedLocals = yaml.safeLoad(content, 'utf8')
@@ -83,9 +87,20 @@ module.exports = function reshapeDefineLocals(opts) {
 			}
 
 			// deep merge with array concat customization
-			mergeWith(options.locals, definedLocals, mergeWithCustomizer)
+			mergeWith(opts.locals, definedLocals, mergeWithCustomizer)
+			console.log('afterrun:', JSON.stringify(opts.locals))
 
 			return emptyNode
 		})
+	}
+}
+
+module.exports.reset = _locals => {
+	return function defineLocalsResetPlugin(tree) {
+		console.log('beforeReset: ', JSON.stringify(_locals))
+		_locals = localsBackup
+		console.log('afterReset: ', JSON.stringify(_locals), "\n---\n")
+
+		return modifyNodes(tree, _ => false, node => node)
 	}
 }

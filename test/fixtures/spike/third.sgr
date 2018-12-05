@@ -1,17 +1,12 @@
 locals.
-	overwritten: (third) Before 'extends'
+	not-overwritten: (third) Before 'extends', dash in key
 	page:
 		title: A third page
 		description: The third page has even more information
 
 extends(src='layout.sgr')
-	locals.
-		overwritten: (third) Inside 'extends'
-
 	block(name='title')
-		locals.
-			overwritten: (third) Inside 'title' block
 		title {{ (item || page).title }}
 
 	block(name='content')
-		p {{ overwritten }}
+		p {{ `${not-overwritten}` }}
