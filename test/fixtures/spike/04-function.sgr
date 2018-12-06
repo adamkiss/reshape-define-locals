@@ -1,0 +1,11 @@
+locals.
+	key: this a life
+
+locals(type='function').
+	return {
+		JSON.stringify(locals)
+	}
+
+extends(src='layout.sgr')
+	block(name='content')
+		pre {{ locals }}
