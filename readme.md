@@ -1,9 +1,8 @@
 # Reshape Define Locals ![NPM Version][version_badge] [![Build Status][build_badge]][build_link]
 
-Define and append locals inside your reshape/sugarml files. Supports YAML and JavaScript functions.
-
-
----
+<div style="font-size:2em">
+Define and append locals inside your reshape/sugarml files. Supports YAML and scoping. Be sure to read [Gotchas](#gotchas)
+</div>
 
 ## Installation
 
