@@ -7,7 +7,7 @@ html
     meta(name='viewport' content='width=device-width, initial-scale=1')
 
     block(name='title')
-      title {{ page.title }}
+      title {{ (item || page || locals.page || {title: ''}).title }}
 
   body
     block(name='content')

@@ -34,18 +34,19 @@ const mergeWithCustomizer = (objVal, srcVal) => {
 		return objVal.concat(srcVal)
 }
 
-let localsBackup = {}
-
 module.exports = function reshapeDefineLocals(opts) {
 	const options = Object.assign({
 		mode: 'yaml',
-		tag: 'define-locals'
+		tag: 'define-locals',
+		key: 'locals',
+		delete: false
 	}, opts)
-	localsBackup = Object.assign({}, options.locals)
 
 	return function defineLocalsPlugin(tree, ctx) {
+		if (options.delete && options.key in ctx.locals)
+			delete ctx.locals[options.key]
+
 		return modifyNodes(tree, node => isDefinition(node, options.tag), node => {
-			console.log('beforerun: ', JSON.stringify(opts.locals))
 			let {mode} = options
 
 			// if node.location is defined, we will prefer innerHTML (= probably HTML)
@@ -87,20 +88,9 @@ module.exports = function reshapeDefineLocals(opts) {
 			}
 
 			// deep merge with array concat customization
-			mergeWith(opts.locals, definedLocals, mergeWithCustomizer)
-			console.log('afterrun:', JSON.stringify(opts.locals))
+			mergeWith(ctx.locals, {[options.key]: definedLocals}, mergeWithCustomizer)
 
 			return emptyNode
 		})
-	}
-}
-
-module.exports.reset = _locals => {
-	return function defineLocalsResetPlugin(tree) {
-		console.log('beforeReset: ', JSON.stringify(_locals))
-		_locals = localsBackup
-		console.log('afterReset: ', JSON.stringify(_locals), "\n---\n")
-
-		return modifyNodes(tree, _ => false, node => node)
 	}
 }

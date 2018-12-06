@@ -95,9 +95,7 @@ test.only('Usage with Spike', async t => {
 
 	await del([spikePublic])
 
-	const locals = {
-		overwritten: 'This is defined in app.js'
-	}
+	const locals = {}
 	await compileProject('spike', {
 		matchers: {html: '*(**/)*.sgr'},
 		ignore: ['layout.sgr', '.gitignore', 'expected'],
@@ -112,13 +110,12 @@ test.only('Usage with Spike', async t => {
 					tag: 'locals',
 					locals
 				}),
-				expressions(),
-				defineLocals.reset(locals)
+				expressions()
 			],
 			locals: ctx => {
-				console.log('locals(): ', JSON.stringify(locals))
 				return Object.assign(locals, {
-					pageId: pageId(ctx)
+					pageId: pageId(ctx),
+					locals: {overwritten: 'This is defined in app.js'}
 				})
 			}
 		}

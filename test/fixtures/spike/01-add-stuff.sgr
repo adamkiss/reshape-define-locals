@@ -1,17 +1,12 @@
 locals.
-	overwritten: (index) Before 'extends'
+	overwritten: "[01] Before 'extends'"
 	page:
-		title: This is index
-		description: A beautiful index page
+		title: '[01] This is index'
+		description: '[01] A beautiful index page'
 
 extends(src='layout.sgr')
 	locals.
-		overwritten: (index) Inside 'extends'
-
-	block(name='title')
-		locals.
-			overwritten: (index) Inside 'title' block
-		title {{ page.title }}
+		overwritten: "[01] Inside 'extends'"
 
 	block(name='content')
-		p {{ overwritten }}
+		pre {{ JSON.stringify(locals) }}
