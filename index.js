@@ -18,12 +18,16 @@ const mergeWithCustomizer = (objVal, srcVal) => {
 module.exports = function reshapeDefineLocals(opts) {
 	const options = Object.assign({
 		tag: 'define-locals',
-		scope: 'file'
+		scope: 'file',
+		locals: {}
 	}, opts)
 
 	return function defineLocalsPlugin(tree, ctx) {
-		if (options.scope && options.key in ctx.locals)
-			delete ctx.locals[options.scope]
+		// if we're in spike, we're working with "ctx.locals", otherwise it's "options.locals"
+		const targetLocals = ('locals' in ctx) ? ctx.locals : options.locals
+
+		if (options.scope && options.scope in targetLocals)
+			delete targetLocals[options.scope]
 
 		return modifyNodes(tree, node => isDefinition(node, options.tag), node => {
 			// if node.location is defined, we will prefer innerHTML (= probably HTML)
@@ -36,9 +40,9 @@ module.exports = function reshapeDefineLocals(opts) {
 
 			// deep merge with array concat customization
 			if (options.scope)
-				mergeWith(ctx.locals, {[options.scope]: definedLocals}, mergeWithCustomizer)
+				mergeWith(targetLocals, {[options.scope]: definedLocals}, mergeWithCustomizer)
 			else
-				mergeWith(ctx.locals, definedLocals, mergeWithCustomizer)
+				mergeWith(targetLocals, definedLocals, mergeWithCustomizer)
 
 			return emptyNode
 		})
