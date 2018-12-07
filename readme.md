@@ -1,6 +1,6 @@
 # Reshape Define Locals
 
-![NPM Version][version_badge]
+[![NPM Version][version_badge]][npm_link]
 [![Build Status][build_badge]][build_link]
 
 Define and append locals inside your reshape/sugarml files. Supports YAML and scoping. Be sure to read [Gotchas](#user-content-gotchas)
@@ -121,3 +121,4 @@ MIT, &copy; 2018 Adam Kiss
 [build_badge]: https://semaphoreci.com/api/v1/adamkiss/reshape-define-locals/branches/master/badge.svg
 [build_link]: https://semaphoreci.com/adamkiss/reshape-define-locals
 [version_badge]: https://img.shields.io/npm/v/reshape-define-locals.svg?label=NPM&style=flat-square&colorB=b54c81
+[npm_link]: https://www.npmjs.com/package/reshape-define-locals
