@@ -1,17 +1,18 @@
-<define-locals type="object">
-	page: {
+<define-locals>
+	page:
 		title: 'This is merged title'
-	},
-	list: ['merged 1', 'merged 2'],
-	deep: {
-		merge: {
-			object: {
-				key: 'this will be also overwritten'
-			}
-		}
-	}
+	list: [merged 1, merged 2]
+	deep:
+		merge:
+			object:
+				key: This will be overwritten
 </define-locals>
 <extends src="layouts-base.html">
 <block name="title"><title>{{ page.title }}</title></block>
-<block name="content"><define-locals>deep: {merge: {object: {key: 'value'}}}</define-locals><ul id="very-amaze"><each loop="item in list"><li>{{ item }}</li></each></ul><include src="layouts-include.html" /></block>
+<block name="content"><define-locals>
+deep:
+	merge:
+		object:
+			key: value
+</define-locals><ul id="very-amaze"><each loop="item in list"><li>{{ item }}</li></each></ul><include src="layouts-include.html" /></block>
 </extends>

@@ -1,0 +1,17 @@
+define-locals.
+	key: simple value
+	array:
+		- item 1
+		- item 2
+		- item 3
+	object:
+		sub: value
+		deep:
+			property: value
+	dash-key: yolo
+html
+	body
+		#expressions
+			ul: each(loop='item in file.array'): li {{ item }}
+		div(attr='{{ file.key }}') {{ file.object.deep.property }}
+		div(attr='{{ file.key }}') {{ file['dash-key'] }}

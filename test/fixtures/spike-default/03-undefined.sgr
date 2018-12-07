@@ -1,0 +1,7 @@
+extends(src='layout.sgr')
+	block(name='locals')
+		define-locals.
+			overwritten: "[03] Inside 'extends' inside 'block'"
+
+	block(name='content')
+		p {{ file.overwritten }}

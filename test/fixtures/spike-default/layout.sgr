@@ -1,0 +1,12 @@
+doctype html
+block(name='locals')
+html
+  head
+    meta(charset='utf-8')
+    meta(name='description' content='{{ ("page" in file) && ("description" in file.page) ? file.page.description : "" }}')
+
+    block(name='title')
+      title {{ (item || page || file.page || {title: ''}).title }}
+
+  body
+    block(name='content')

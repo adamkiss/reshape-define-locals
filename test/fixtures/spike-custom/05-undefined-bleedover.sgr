@@ -1,0 +1,10 @@
+locals.
+	overwritten: "[05] On the top"
+
+extends(src='layout.sgr')
+	locals.
+		overwritten: This will be skipped, so it doesn't matter
+
+	block(name='content')
+		p {{ overwritten }}
+		p {{ bleedover }}

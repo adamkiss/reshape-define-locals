@@ -1,0 +1,14 @@
+locals.
+	overwritten: "[04] Before 'extends'"
+	page:
+		title: '[04] This is index'
+		description: '[04] A beautiful index page'
+	bleedover: '[04] This will bleedover'
+
+extends(src='layout.sgr')
+	locals.
+		overwritten: "[04] Inside 'extends'"
+
+	block(name='content')
+		p {{ overwritten }}
+		p {{ bleedover }}

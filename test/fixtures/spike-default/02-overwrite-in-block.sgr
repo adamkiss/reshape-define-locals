@@ -1,0 +1,15 @@
+define-locals.
+	page:
+		title: '[02] A second page'
+		description: '[02] Second page has some more information'
+
+extends(src='layout.sgr')
+	block(name='locals')
+		define-locals.
+			overwritten: "[02] Inside 'extends' inside 'block'"
+
+	define-locals.
+		overwritten: "[02] Inside 'extends' NOT inside 'block'"
+
+	block(name='content')
+		p {{ file.overwritten }}

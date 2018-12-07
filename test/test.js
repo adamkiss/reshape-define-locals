@@ -12,7 +12,6 @@ const layouts = require('reshape-layouts')
 const include = require('reshape-include')
 
 const Spike = require('spike-core')
-const reshapeStandard = require('reshape-standard')
 const pageId = require('spike-page-id')
 
 const defineLocals = require('..')
@@ -24,7 +23,9 @@ test('Basic', async t => {
 	const source = await readFileAsync(path.join(fixtures, `basic.html`), 'utf8')
 	const expect = await readFileAsync(path.join(fixtures, `basic.expected.html`), 'utf8')
 
-	const config = {locals: {foo: 'bar'}}
+	const config = {
+		locals: {foo: 'bar'}
+	}
 
 	const actual = await reshape({
 		plugins: [defineLocals(config), expressions(config)]
@@ -35,11 +36,12 @@ test('Basic', async t => {
 	return t.true(actual.output(config.locals).trim() === expect.trim())
 })
 
-test('Layouts and partials', async t => {
+test('Unscoped in layouts and partials', async t => {
 	const source = await readFileAsync(path.join(fixtures, `layouts.html`), 'utf8')
 	const expect = await readFileAsync(path.join(fixtures, `layouts.expected.html`), 'utf8')
 
 	const config = {
+		scope: false,
 		locals: {
 			page: {title: 'This will be overwritten'},
 			list: ['original 1', 'original 2'],
@@ -59,9 +61,9 @@ test('Layouts and partials', async t => {
 	return t.true(actual.output(config.locals).trim() === expect.trim())
 })
 
-test('Yaml and SugarML', async t => {
-	const source = await readFileAsync(path.join(fixtures, `yaml.sgr`), 'utf8')
-	const expect = await readFileAsync(path.join(fixtures, `yaml.expected.html`), 'utf8')
+test('Scoped SugarML', async t => {
+	const source = await readFileAsync(path.join(fixtures, `scoped.sgr`), 'utf8')
+	const expect = await readFileAsync(path.join(fixtures, `scoped.expected.html`), 'utf8')
 
 	const config = {
 		locals: {
@@ -86,17 +88,44 @@ test('Yaml and SugarML', async t => {
 	return t.true(actual.output(config.locals).trim() === expect.trim())
 })
 
-test.only('Usage with Spike', async t => {
-	t.plan(3)
+test('Unscoped SugarML and custom tag', async t => {
+	const source = await readFileAsync(path.join(fixtures, `unscoped-custom-tag.sgr`), 'utf8')
+	const expect = await readFileAsync(path.join(fixtures, `unscoped-custom-tag.expected.html`), 'utf8')
 
-	const spikeRoot = path.join(fixtures, 'spike')
+	const config = {
+		tag: 'locals',
+		scope: false,
+		locals: {
+			page: {title: 'This will be overwritten'},
+			list: ['original 1', 'original 2'],
+			deep: {merge: {object: {key: 'not value'}}}
+		}
+	}
+
+	const actual = await reshape({
+		parser: sugar,
+		plugins: [
+			layouts({encoding: 'utf8', root: fixtures}),
+			include({root: fixtures}),
+			defineLocals(config),
+			expressions(config)
+		]
+	}).process(source)
+
+	logActual(actual, config)
+
+	return t.true(actual.output(config.locals).trim() === expect.trim())
+})
+
+test('Usage with Spike, scoped', async t => {
+	const spikeRoot = path.join(fixtures, 'spike-default')
 	const spikePublic = path.join(spikeRoot, 'public')
 	const spikeExpect = path.join(fixtures, 'spike-expected')
 
 	await del([spikePublic])
 
 	const locals = {}
-	await compileProject('spike', {
+	await compileProject('spike-default', {
 		matchers: {html: '*(**/)*.sgr'},
 		ignore: ['layout.sgr', '.gitignore', 'expected'],
 		entry: {index: ['./index.js']},
@@ -105,11 +134,7 @@ test.only('Usage with Spike', async t => {
 			plugins: [
 				layouts({encoding: 'utf8', root: spikeRoot}),
 				include({root: spikeRoot}),
-				defineLocals({
-					mode: 'yaml',
-					tag: 'locals',
-					locals
-				}),
+				defineLocals(),
 				expressions()
 			],
 			locals: ctx => {
@@ -121,23 +146,58 @@ test.only('Usage with Spike', async t => {
 		}
 	})
 
-	// const compareListFiles = ['index.html', 'second.html', 'third.html', 'fourth.html']
-	// const actualFiles = await Promise.all(compareListFiles.map(
-	// 	f => readFileAsync(path.join(spikePublic, f), 'utf8')
-	// ))
-	// const expectedFiles = await Promise.all(compareListFiles.map(
-	// 	f => readFileAsync(path.join(spikeExpect, f), 'utf8')
-	// ))
-	// t.deepEqual(actualFiles, expectedFiles)
+	const compareListFiles = ['01-add-stuff.html', '02-overwrite-in-block.html', '03-undefined.html']
+	const actualFiles = await Promise.all(compareListFiles.map(
+		f => readFileAsync(path.join(spikePublic, f), 'utf8')
+	))
+	const expectedFiles = await Promise.all(compareListFiles.map(
+		f => readFileAsync(path.join(spikeExpect, `default.${f}`), 'utf8')
+	))
+	t.deepEqual(actualFiles, expectedFiles)
+})
 
-	// const compareListFails = ['fail-index.html', 'fail-second.html']
-	// await Promise.all(compareListFails.map(
-	// 	f => {
-	// 		const expected = readFileAsync(path.join(spikePublic, f), 'utf8')
-	// 		const actual = readFileAsync(path.join(spikeExpect, f), 'utf8')
-	// 		return t.not(expected, actual)
-	// 	}
-	// ))
+test('Usage with Spike, custom tag and unscoped', async t => {
+	const spikeRoot = path.join(fixtures, 'spike-custom')
+	const spikePublic = path.join(spikeRoot, 'public')
+	const spikeExpect = path.join(fixtures, 'spike-expected')
+
+	await del([spikePublic])
+
+	const locals = {}
+	await compileProject('spike-custom', {
+		matchers: {html: '*(**/)*.sgr'},
+		ignore: ['layout.sgr', '.gitignore', 'expected'],
+		entry: {index: ['./index.js']},
+		reshape: {
+			parser: sugar,
+			plugins: [
+				layouts({encoding: 'utf8', root: spikeRoot}),
+				include({root: spikeRoot}),
+				defineLocals({
+					scope: false,
+					tag: 'locals'
+				}),
+				expressions()
+			],
+			locals: ctx => {
+				return Object.assign(locals, {
+					pageId: pageId(ctx),
+					// here we "recreate" keys so they don't bleed through between the runs
+					overwritten: 'This is defined in app.js',
+					page: {title: 'Default title', description: 'Default description'}
+				})
+			}
+		}
+	})
+
+	const compareListFiles = ['04-add-stuff.html', '05-undefined-bleedover.html']
+	const actualFiles = await Promise.all(compareListFiles.map(
+		f => readFileAsync(path.join(spikePublic, f), 'utf8')
+	))
+	const expectedFiles = await Promise.all(compareListFiles.map(
+		f => readFileAsync(path.join(spikeExpect, `custom.${f}`), 'utf8')
+	))
+	t.deepEqual(actualFiles, expectedFiles)
 })
 
 function logActual(actual, config) {

@@ -1,12 +1,12 @@
-locals.
+define-locals.
 	overwritten: "[01] Before 'extends'"
 	page:
 		title: '[01] This is index'
 		description: '[01] A beautiful index page'
 
 extends(src='layout.sgr')
-	locals.
+	define-locals.
 		overwritten: "[01] Inside 'extends'"
 
 	block(name='content')
-		pre {{ JSON.stringify(locals) }}
+		p {{ file.overwritten }}
