@@ -33,7 +33,7 @@ test('Basic', async t => {
 
 	logActual(actual, config)
 
-	return t.true(actual.output(config.locals).trim() === expect.trim())
+	return t.is(actual.output(config.locals).trim(), expect.trim())
 })
 
 test('Unscoped in layouts and partials', async t => {
@@ -58,7 +58,7 @@ test('Unscoped in layouts and partials', async t => {
 
 	logActual(actual, config)
 
-	return t.true(actual.output(config.locals).trim() === expect.trim())
+	return t.is(actual.output(config.locals).trim(), expect.trim())
 })
 
 test('Scoped SugarML', async t => {
@@ -85,7 +85,7 @@ test('Scoped SugarML', async t => {
 
 	logActual(actual, config)
 
-	return t.true(actual.output(config.locals).trim() === expect.trim())
+	return t.is(actual.output(config.locals).trim(), expect.trim())
 })
 
 test('Unscoped SugarML and custom tag', async t => {
@@ -114,7 +114,7 @@ test('Unscoped SugarML and custom tag', async t => {
 
 	logActual(actual, config)
 
-	return t.true(actual.output(config.locals).trim() === expect.trim())
+	return t.is(actual.output(config.locals).trim(), expect.trim())
 })
 
 test('Usage with Spike, scoped', async t => {
@@ -153,7 +153,7 @@ test('Usage with Spike, scoped', async t => {
 	const expectedFiles = await Promise.all(compareListFiles.map(
 		f => readFileAsync(path.join(spikeExpect, `default.${f}`), 'utf8')
 	))
-	t.deepEqual(actualFiles, expectedFiles)
+	return t.deepEqual(actualFiles, expectedFiles)
 })
 
 test('Usage with Spike, custom tag and unscoped', async t => {
@@ -197,7 +197,8 @@ test('Usage with Spike, custom tag and unscoped', async t => {
 	const expectedFiles = await Promise.all(compareListFiles.map(
 		f => readFileAsync(path.join(spikeExpect, `custom.${f}`), 'utf8')
 	))
-	t.deepEqual(actualFiles, expectedFiles)
+	await t.is(actualFiles[0], expectedFiles[0])
+	await t.not(actualFiles[1], expectedFiles[1])
 })
 
 function logActual(actual, config) {

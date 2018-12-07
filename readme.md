@@ -111,7 +111,7 @@ As far as I can tell, only named blocks are processed in `extends`, so either de
 
 ### Old locals are available until changed when using unscoped locals
 
-The simplest way to actually bring the data from your `define-locals` block to reshape is to modify original `locals` object. What this means though, is that keys unchanged between files stay the same, meaning that, if `file-1.html` defines local property `key` to `value` and `file-2.html` doesn't, if you call `{{ key }}` in `file-2.html`, you will get `value`, not undefined.
+The simplest way to actually bring the data from your `define-locals` block to reshape is to modify original `locals` object. What this means though, is that keys unchanged between files stay the same, meaning that, if `file-1.html` defines local property `key` to `value` and `file-2.html` doesn't, if you call `{{ key }}` in `file-2.html`, you will **probably not get undefined**. Since there isn't particular order in which are files processed, at least with Spike, the data _may_ bleed over, or it may not, depending on the file order.
 
 What this means in practice: you need to reset data between different files yourself, or not be dependent on non-existence of some data.
 

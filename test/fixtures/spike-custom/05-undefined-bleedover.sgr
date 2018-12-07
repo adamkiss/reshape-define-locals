@@ -4,6 +4,7 @@ locals.
 extends(src='layout.sgr')
 	locals.
 		overwritten: This will be skipped, so it doesn't matter
+		bleedover: '[05] This will be different'
 
 	block(name='content')
 		p {{ overwritten }}
